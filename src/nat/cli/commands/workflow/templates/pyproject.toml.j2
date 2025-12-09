@@ -19,7 +19,15 @@ description = "Custom NeMo Agent Toolkit Workflow"
 classifiers = ["Programming Language :: Python"]
 
 {% if editable %}[tool.uv.sources]
-nvidia-nat = { path = "{{ rel_path_to_repo_root}}", editable = true }{% endif %}
+nvidia-nat = { path = "{{ rel_path_to_repo_root }}", editable = true }
+nvidia-nat-langchain = { path = "{{ rel_path_to_repo_root }}/packages/nvidia_nat_langchain", editable = true }
+nvidia-nat-redis = { path = "{{ rel_path_to_repo_root }}/packages/nvidia_nat_redis", editable = true }
+nvidia-nat-profiling = { path = "{{ rel_path_to_repo_root }}/packages/nvidia_nat_profiling", editable = true }
+nvidia-nat-phoenix = { path = "{{ rel_path_to_repo_root }}/packages/nvidia_nat_phoenix", editable = true }
+nvidia-nat-weave = { path = "{{ rel_path_to_repo_root }}/packages/nvidia_nat_weave", editable = true }
+nvidia-nat-opentelemetry = { path = "{{ rel_path_to_repo_root }}/packages/nvidia_nat_opentelemetry", editable = true }
+nvidia-nat-llama-index = { path = "{{ rel_path_to_repo_root }}/packages/nvidia_nat_llama_index", editable = true }
+{% endif %}
 
 [project.entry-points.'nat.components']
 {{ package_name }} = "{{ package_name }}.register"

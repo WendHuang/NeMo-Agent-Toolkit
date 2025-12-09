@@ -33,6 +33,7 @@ from nat.data_models.optimizable import OptimizableField
 from nat.data_models.optimizable import OptimizableMixin
 from nat.data_models.optimizable import SearchSpace
 from nat.utils.type_converter import GlobalTypeConverter
+from nat.agent.react_agent.prompt import SYSTEM_PROMPT
 
 logger = logging.getLogger(__name__)
 
@@ -67,9 +68,14 @@ class ReActAgentWorkflowConfig(AgentBaseConfig, OptimizableMixin, name="react_ag
         default=True,
         description="Whether to replace single quotes with double quotes in the tool input. "
         "This is useful for tools that expect structured json input.")
-    system_prompt: str | None = Field(
+    system_prompt: str | None = OptimizableField(
         default=None,
-        description="Provides the SYSTEM_PROMPT to use with the agent")  # defaults to SYSTEM_PROMPT in prompt.py
+        description="Provides the SYSTEM_PROMPT to use with the agent",  # defaults to SYSTEM_PROMPT in prompt.py
+        space=SearchSpace(
+            is_prompt=True,
+            prompt=SYSTEM_PROMPT,
+            prompt_purpose="Provides the SYSTEM_PROMPT to use with the agent",
+        ))
     max_history: int = Field(default=15, description="Maximum number of messages to keep in the conversation history.")
     additional_instructions: str | None = OptimizableField(
         default=None,

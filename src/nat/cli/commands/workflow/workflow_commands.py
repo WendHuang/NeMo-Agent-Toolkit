@@ -302,7 +302,7 @@ def create_command(workflow_name: str, install: bool, workflow_dir: str, descrip
         if install:
             # Install the new package without changing directories
             click.echo(f"Installing workflow '{workflow_name}'...")
-            result = subprocess.run(install_cmd, capture_output=True, text=True, check=True)
+            result = subprocess.run(install_cmd, check=True)
 
             if result.returncode != 0:
                 click.echo(f"An error occurred during installation:\n{result.stderr}")
