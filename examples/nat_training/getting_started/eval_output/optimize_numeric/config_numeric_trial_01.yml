@@ -1,0 +1,194 @@
+authentication: {}
+embedders: {}
+eval:
+  evaluators:
+    answer_accuracy:
+      input_obj_field: null
+      llm_name: nim_judge_llm
+      metric: AnswerAccuracy
+      type: ragas
+    llm_latency:
+      max_concurrency: 8
+      type: avg_llm_latency
+    token_efficiency:
+      max_concurrency: 8
+      type: avg_tokens_per_llm_end
+  general:
+    dataset:
+      file_path: ./getting_started/eval_data.json
+      filter:
+        allowlist: null
+        denylist: null
+      id_key: id
+      remote_file_path: null
+      s3: null
+      structure:
+        answer_key: answer
+        disable: false
+        expected_trajectory_key: expected_intermediate_steps
+        generated_answer_key: generated_answer
+        question_key: question
+        trajectory_key: intermediate_steps
+      type: json
+    max_concurrency: 8
+    output: null
+    output_dir: !!python/object/apply:pathlib.PosixPath
+    - getting_started
+    - eval_output
+    - optimize_numeric
+    profiler: null
+    workflow_alias: null
+function_groups: {}
+functions:
+  current_datetime:
+    middleware: []
+    type: current_datetime
+general:
+  front_end:
+    cors:
+      allow_credentials: false
+      allow_headers: []
+      allow_methods:
+      - GET
+      allow_origin_regex: null
+      allow_origins: null
+      expose_headers: []
+      max_age: 600
+    dask_log_level: WARNING
+    dask_workers: processes
+    db_url: null
+    endpoints: []
+    evaluate:
+      description: Evaluates the performance and accuracy of the workflow on a dataset
+      method: POST
+      openai_api_path: null
+      openai_api_v1_path: null
+      path: /evaluate
+      websocket_path: null
+    evaluate_item:
+      description: Evaluate a single item with a specified evaluator
+      method: POST
+      openai_api_path: null
+      openai_api_v1_path: null
+      path: /evaluate/item
+      websocket_path: null
+    host: localhost
+    max_running_async_jobs: 10
+    oauth2_callback_path: /auth/redirect
+    object_store: null
+    port: 8000
+    reload: false
+    root_path: ''
+    runner_class: null
+    scheduler_address: null
+    step_adaptor:
+      custom_event_types: []
+      mode: !!python/object/apply:nat.data_models.step_adaptor.StepAdaptorMode
+      - default
+    type: fastapi
+    use_gunicorn: false
+    workers: 1
+    workflow:
+      description: 'Executes the default NAT workflow from the loaded configuration '
+      method: POST
+      openai_api_path: /chat
+      openai_api_v1_path: /v1/chat/completions
+      path: /generate
+      websocket_path: /websocket
+  telemetry:
+    logging:
+      console:
+        level: INFO
+        type: console
+    tracing: {}
+  use_uvloop: null
+llms:
+  nim_judge_llm:
+    api_key: null
+    api_type: !!python/object/apply:nat.data_models.llm.APITypeEnum
+    - chat_completion
+    base_url: null
+    max_tokens: 8
+    model_name: qwen/qwen3-next-80b-a3b-instruct
+    temperature: 0.0
+    thinking: null
+    top_p: null
+    type: nim
+  nim_llm:
+    api_key: null
+    api_type: !!python/object/apply:nat.data_models.llm.APITypeEnum
+    - chat_completion
+    base_url: null
+    max_tokens: 1024
+    model_name: meta/llama-3.1-70b-instruct
+    temperature: 0.4
+    thinking: null
+    top_p: null
+    type: nim
+memory: {}
+middleware: {}
+object_stores: {}
+optimizer:
+  eval_metrics:
+    accuracy:
+      direction: maximize
+      evaluator_name: answer_accuracy
+      weight: 1.0
+    latency:
+      direction: minimize
+      evaluator_name: llm_latency
+      weight: 1.0
+    token_efficiency:
+      direction: minimize
+      evaluator_name: token_efficiency
+      weight: 1.0
+  multi_objective_combination_mode: harmonic
+  numeric:
+    enabled: true
+    n_trials: 20
+    sampler: !!python/object/apply:nat.data_models.optimizer.SamplerType
+    - grid
+  output_path: !!python/object/apply:pathlib.PosixPath
+  - getting_started
+  - eval_output
+  - optimize_numeric
+  prompt:
+    enabled: false
+    ga_crossover_rate: 0.8
+    ga_diversity_lambda: 0.0
+    ga_elitism: 2
+    ga_generations: 15
+    ga_mutation_rate: 0.3
+    ga_offspring_size: null
+    ga_parallel_evaluations: 8
+    ga_population_size: 24
+    ga_selection_method: tournament
+    ga_tournament_size: 3
+    prompt_population_init_function: null
+    prompt_recombination_function: null
+  reps_per_param_set: 1
+  target: null
+retrievers: {}
+ttc_strategies: {}
+workflow:
+  additional_instructions: null
+  description: ReAct Agent Workflow
+  include_tool_input_schema_in_tool_description: true
+  llm_name: !!python/object/new:nat.data_models.component_ref.LLMRef
+  - nim_llm
+  log_response_max_chars: 1000
+  max_history: 15
+  max_tool_calls: 15
+  middleware: []
+  normalize_tool_input_quotes: true
+  parse_agent_response_max_retries: 3
+  pass_tool_call_errors_to_agent: true
+  retry_agent_response_parsing_errors: true
+  system_prompt: null
+  tool_call_max_retries: 1
+  tool_names:
+  - !!python/object/new:nat.data_models.component_ref.FunctionRef
+    - current_datetime
+  type: react_agent
+  verbose: false
+  workflow_alias: null

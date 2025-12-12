@@ -353,7 +353,12 @@ class DecomposedType:
             True if the current type is an instance of the specified instance, False otherwise
         """
 
-        return isinstance(instance, self.get_base_type().root)
+        try:
+            return isinstance(instance, self.get_base_type().root)
+        except TypeError:
+            # Handle generic types that can't be used with isinstance
+            # For example: typing.Union, typing.Any, etc.
+            return False
 
     def get_pydantic_schema(self,
                             converters: list[collections.abc.Callable] | None = None) -> type[BaseModel] | type[None]:

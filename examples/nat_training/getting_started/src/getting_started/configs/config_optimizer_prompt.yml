@@ -1,0 +1,127 @@
+functions:
+  current_datetime:
+    _type: current_datetime
+  prompt_init:
+    _type: prompt_init
+    optimizer_llm: prompt_optimizer_llm
+    system_objective: "ChatBot agent that can answer user questions directly or by calling tools"
+  prompt_recombination:
+    _type: prompt_recombiner
+    optimizer_llm: prompt_optimizer_llm
+    system_objective: "ChatBot agent that can answer user questions directly or by calling tools"
+
+llms:
+  nim_llm:
+    _type: nim
+    model_name: meta/llama-3.1-70b-instruct
+    temperature: 0.0
+    max_tokens: 1024
+    optimizable_params:
+      - model_name
+      - temperature
+    search_space:
+      model_name:
+        values:
+          - meta/llama-3.1-70b-instruct
+          - meta/llama-3.1-8b-instruct
+      temperature:
+        low: 0.0
+        high: 0.4
+        step: 0.2
+
+  nim_judge_llm:
+    _type: nim
+    model_name: qwen/qwen3-next-80b-a3b-instruct
+    temperature: 0.0
+    max_tokens: 8 # RAGAS accuracy only needs a score (0-1)
+
+  prompt_optimizer_llm:
+    _type: nim
+    model_name: meta/llama-3.1-70b-instruct
+    temperature: 0.5
+    max_tokens: 2048
+
+workflow:
+  _type: react_agent
+  llm_name: nim_llm
+  tool_names: [current_datetime]
+  parse_agent_response_max_retries: 3
+  optimizable_params:
+    - system_prompt
+  search_space:
+    system_prompt:
+      is_prompt: true
+      prompt_purpose: "Guide the agent to effectively answer user questions directly or by calling tools"
+      prompt: |
+        Answer the following questions as best you can. You may ask the human to use the following tools:
+
+        {tools}
+
+        You may respond in one of two formats.
+        Use the following format exactly to ask the human to use a tool:
+
+        Question: the input question you must answer
+        Thought: you should always think about what to do
+        Action: the action to take, should be one of [{tool_names}]
+        Action Input: the input to the action (if there is no required input, include "Action Input: None")
+        Observation: wait for the human to respond with the result from the tool, do not assume the response
+
+        ... (this Thought/Action/Action Input/Observation can repeat N times. If you do not need to use a tool, or after asking the human to use any tools and waiting for the human to respond, you might know the final answer.)
+        Use the following format once you have the final answer:
+
+        Thought: I now know the final answer
+        Final Answer: the final answer to the original input question
+
+general:
+  telemetry:
+    logging:
+      console:
+        _type: console
+        level: INFO
+
+eval:
+  general:
+    output_dir: ./getting_started/eval_output/optimize_prompt/
+    verbose: true
+    dataset:
+      _type: json
+      file_path: ./getting_started/eval_data.json
+
+  evaluators:
+    answer_accuracy:
+      _type: ragas
+      metric: AnswerAccuracy
+      llm_name: nim_judge_llm
+    llm_latency:
+      _type: avg_llm_latency
+    token_efficiency:
+      _type: avg_tokens_per_llm_end
+
+
+optimizer:
+  output_path: ./getting_started/eval_output/optimize_prompt/
+  reps_per_param_set: 1 # Number of times to evaluate EACH config (for statistical significance)
+  eval_metrics: # specifies which evaluatin metrics to optimize for
+    accuracy: # custom name for the metric
+      evaluator_name: answer_accuracy  # References the evaluator defined under the 'eval' section
+      direction: maximize
+      weight: 1.0 # coefficient of relative importance for the optimizer (defaults to 1.0)
+    token_efficiency: # custom name for the metric
+      evaluator_name: token_efficiency # References the evaluator defined under the 'eval' section
+      direction: minimize
+      weight: 1.0
+    latency: # custom name for the metric
+      evaluator_name: llm_latency # References the evaluator defined under the 'eval' section
+      direction: minimize
+      weight: 1.0
+
+  numeric:
+    enabled: false # disable numeric and categorical parameters to be optimized
+    sampler: grid # uses Optuna GridSearch to determine the unique parameter sets to evaluate
+
+  prompt:
+    enabled: true # enable for prompt optimization
+    prompt_population_init_function: prompt_init
+    prompt_recombination_function: prompt_recombination
+    ga_generations: 3
+    ga_population_size: 5
