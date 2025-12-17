@@ -1,0 +1,80 @@
+
+
+
+=== Multi-Example Nested Call Profiling Report ===
+Total calls (across all examples): 31
+
+-- Concurrency Distribution (all examples) --
+p50=10.0, p90=14.0, p95=14.0, p99=14.0
+
+-- Top 5 Calls by Bottleneck Score (subtree_time) --
+1) UUID=ac682da5-01f2-4e77-a318-c4bfe8ce36d8, FUNCTION '<workflow>', dur=8.79, self_time=0.01, subtree_time=8.79, concurrency=14.0, score=8.79
+2) UUID=ff91aa1a-7fcf-435a-b814-fd73dc218baa, FUNCTION '<workflow>', dur=8.69, self_time=0.01, subtree_time=8.69, concurrency=14.0, score=8.69
+3) UUID=b7d88c37-a01e-43d7-b4f1-b6ba548fba30, FUNCTION '<workflow>', dur=6.31, self_time=0.01, subtree_time=6.31, concurrency=14.0, score=6.31
+4) UUID=e3b9cf9d-968a-4631-956f-91e0de19795b, TOOL 'rag_agent', dur=6.16, self_time=0.00, subtree_time=6.16, concurrency=14.0, score=6.16
+5) UUID=93bad806-11b0-44c9-a1b6-d22436ab9ab1, FUNCTION 'rag_agent', dur=6.16, self_time=0.01, subtree_time=6.16, concurrency=14.0, score=6.16
+
+-- Full Tree(s) (All Examples) --
+- FUNCTION '<workflow>' (uuid=ac682da5-01f2-4e77-a318-c4bfe8ce36d8, start=1765872843.91, end=1765872852.69, dur=8.79)
+  - LLM 'meta/llama-3.3-70b-instruct' (uuid=6f095eee-6864-4f9f-9a67-c32b735f17fd, start=1765872843.92, end=1765872845.46, dur=1.54)
+  - TOOL 'data_analysis_agent' (uuid=387937d5-b849-40d4-943f-d03826a6d732, start=1765872845.46, end=1765872850.93, dur=5.47)
+    - FUNCTION 'data_analysis_agent' (uuid=2993d7f4-6d60-4cc6-937e-7c4fde8104fb, start=1765872845.46, end=1765872850.93, dur=5.47)
+      - LLM 'meta/llama-3.3-70b-instruct' (uuid=fd403989-5242-42af-81ee-4c64e2060840, start=1765872845.46, end=1765872849.51, dur=4.05)
+      - TOOL 'total_product_sales_data' (uuid=7567884b-3890-48e7-b491-69167a378c44, start=1765872849.52, end=1765872849.52, dur=0.00)
+        - FUNCTION 'total_product_sales_data' (uuid=90418c6d-76c1-429a-b50d-75a7bf0f17bf, start=1765872849.52, end=1765872849.52, dur=0.00)
+      - LLM 'meta/llama-3.3-70b-instruct' (uuid=ba9de160-863b-42dc-8752-c4d3b1bb1a03, start=1765872849.52, end=1765872850.05, dur=0.53)
+      - TOOL 'total_product_sales_data' (uuid=8b0d82de-7dc6-4199-9e1f-6c123b0f3df8, start=1765872850.05, end=1765872850.06, dur=0.00)
+        - FUNCTION 'total_product_sales_data' (uuid=fa65bc5b-fc8f-4cb9-af9f-ce798869fff7, start=1765872850.06, end=1765872850.06, dur=0.00)
+      - LLM 'meta/llama-3.3-70b-instruct' (uuid=63a0bdb0-c565-4f49-9ef6-cf32b737aa5a, start=1765872850.06, end=1765872850.93, dur=0.87)
+  - LLM 'meta/llama-3.3-70b-instruct' (uuid=daefe9ee-ce34-4afe-8b99-1fc26041cf02, start=1765872850.93, end=1765872852.69, dur=1.76)
+- FUNCTION '<workflow>' (uuid=ff91aa1a-7fcf-435a-b814-fd73dc218baa, start=1765872843.91, end=1765872852.60, dur=8.69)
+  - LLM 'meta/llama-3.3-70b-instruct' (uuid=85d6ee7d-de25-4076-9331-4903c6c50d1c, start=1765872843.92, end=1765872844.95, dur=1.03)
+  - TOOL 'rag_agent' (uuid=e3b9cf9d-968a-4631-956f-91e0de19795b, start=1765872844.95, end=1765872851.12, dur=6.16)
+    - FUNCTION 'rag_agent' (uuid=93bad806-11b0-44c9-a1b6-d22436ab9ab1, start=1765872844.95, end=1765872851.12, dur=6.16)
+      - LLM 'meta/llama-3.3-70b-instruct' (uuid=6273915f-8c2f-44e6-afec-a6c441bd36dc, start=1765872844.95, end=1765872845.81, dur=0.85)
+      - TOOL 'product_catalog_rag' (uuid=e838c5cb-baa7-4bd2-9d1d-f23ed40e7ba6, start=1765872845.81, end=1765872849.51, dur=3.70)
+        - FUNCTION 'product_catalog_rag' (uuid=5717b23a-ab8c-4318-a881-66a8f82d19ea, start=1765872845.81, end=1765872849.51, dur=3.70)
+          - LLM 'meta/llama-3.3-70b-instruct' (uuid=7f4023a1-2dbc-4012-8720-4b5e07834f01, start=1765872846.14, end=1765872849.51, dur=3.37)
+      - LLM 'meta/llama-3.3-70b-instruct' (uuid=d988e3cb-5c61-40f8-8733-301864b899eb, start=1765872849.51, end=1765872851.11, dur=1.60)
+  - LLM 'meta/llama-3.3-70b-instruct' (uuid=1b18d870-ec78-4ac0-8a4b-f307fd691ac3, start=1765872851.12, end=1765872852.60, dur=1.48)
+- FUNCTION '<workflow>' (uuid=b7d88c37-a01e-43d7-b4f1-b6ba548fba30, start=1765872843.91, end=1765872850.22, dur=6.31)
+  - LLM 'meta/llama-3.3-70b-instruct' (uuid=a57853ed-b2d7-4de0-b060-0080d2e2512f, start=1765872843.92, end=1765872844.88, dur=0.96)
+  - TOOL 'data_analysis_agent' (uuid=a76e2c9e-ec9d-4e85-bbfc-8b47ee6e2f49, start=1765872844.88, end=1765872849.52, dur=4.64)
+    - FUNCTION 'data_analysis_agent' (uuid=e48d6047-d983-464c-a67a-0bf781252604, start=1765872844.88, end=1765872849.52, dur=4.63)
+      - LLM 'meta/llama-3.3-70b-instruct' (uuid=964ed43a-5c40-48ee-ac75-ddbd70e81eba, start=1765872844.89, end=1765872845.57, dur=0.68)
+      - TOOL 'sales_per_day' (uuid=655d855a-647a-46d0-83e9-1300ef445363, start=1765872845.57, end=1765872845.57, dur=0.00)
+        - FUNCTION 'sales_per_day' (uuid=4999a95b-3528-4a58-8dcf-c783db09ce83, start=1765872845.57, end=1765872845.57, dur=0.00)
+      - LLM 'meta/llama-3.3-70b-instruct' (uuid=17e28b63-feec-4c40-bf56-f8b4f9c09762, start=1765872845.57, end=1765872849.51, dur=3.94)
+  - LLM 'meta/llama-3.3-70b-instruct' (uuid=2b85c66e-863e-4c98-b1cb-e9fb822a47d7, start=1765872849.52, end=1765872850.22, dur=0.70)
+
+
+=== Concurrency Spike Analysis ===
+Total calls in dataset: 21
+Total time observed: 8.78 units (sum of concurrency timeline)
+
+-- Concurrency Distribution --
+  concurrency=1: 0.10 time
+  concurrency=2: 1.49 time
+  concurrency=3: 1.16 time
+  concurrency=4: 0.78 time
+  concurrency=5: 1.22 time
+  concurrency=6: 0.67 time
+  concurrency=7: 3.37 time
+
+Percentiles => p50=5.0, p90=7.0, p95=7.0, p99=7.0
+Spike threshold chosen: 7
+
+-- Detected Spike Intervals --
+1) 1765872846.14-1765872849.51, concurrency=7, length=3.37, #active_calls=7
+
+-- Correlation Stats for Spiked Calls --
+Avg prompt_tokens in spike calls: 572.5
+Avg total_tokens in spike calls : 600.5
+
+-- Average Latency by Midpoint Concurrency --
+  concurrency=2 => avg_latency=1.62
+  concurrency=3 => avg_latency=1.18
+  concurrency=4 => avg_latency=1.23
+  concurrency=5 => avg_latency=0.46
+  concurrency=6 => avg_latency=0.00
+  concurrency=7 => avg_latency=4.48
